@@ -1,3 +1,14 @@
 {
-    "extends":["airbnb"]
+    "env":{
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends":["airbnb"],
+    "rules":{
+        "no-console":"off", // выключает запрет Console.log
+        "eol-last":"off",// В конце файла не должно быть пустых строк
+        "no-plusplus":"off", // Выключает ошибку при ++
+        "indent": "off" // настройка отступов. Разрешает 2 пробела и 1 tab [2, "tab"]
+    }
 }
