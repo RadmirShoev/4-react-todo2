@@ -1,30 +1,25 @@
 import React, { Component } from 'react';
 import './app.css';
 
-import Footer from '../footer/footer.js';
-import NewTaskForm from '../new-task-form/new-task-form.js';
-import TaskList from '../task-list/task-list.js';
+import Footer from '../footer/footer';
+import NewTaskForm from '../new-task-form/new-task-form';
+import TaskList from '../task-list/task-list';
 
 export default class App extends Component {
   // Компонент всего приложения
   maxId = 100;
 
-  state = {
-    todoData: [
-      this.createTask('Completed task'),
-      this.createTask('Editing task'),
-      this.createTask('Active task'),
-    ],
+  // Объект с состояниями Фильтра All, Active, Completed
+  filters = {
+    all: 'selected',
+    active: '',
+    completed: '',
   };
 
-  // Функция создания элемента списка
-  createTask(label) {
-    return {
-      label,
-      done: false,
-      visible: true,
-      id: this.maxId++,
-      startTime: new Date(),
+  constructor(props) {
+    super(props);
+    this.state = {
+      todoData: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
     };
   }
 
@@ -93,21 +88,12 @@ export default class App extends Component {
     });
   };
 
-  // Объект с состояниями Фильтра All, Active, Completed
-  filters = {
-    all: 'selected',
-    active: '',
-    completed: '',
-  };
-
   // ФИЛЬТР Все задачи
   selectAll = () => {
     this.setState(({ todoData }) => {
       const newArr = [...todoData];
       /* Делаем все элементы видимыми */
-      for (const elem of newArr) {
-        elem.visible = true;
-      }
+      newArr.forEach((elem) => (elem.visible = true));
 
       this.filters = {
         all: 'selected',
@@ -126,14 +112,14 @@ export default class App extends Component {
     this.setState(({ todoData }) => {
       const newArr = [...todoData];
       /* Скрываем завершенные задачи */
-      for (const elem of newArr) {
+      newArr.forEach((elem) => {
         if (elem.done) {
           // задача выполнена
           elem.visible = false; // сделай ее невидимой
         } else {
           elem.visible = true; // иначе сделай видимой
         }
-      }
+      });
 
       this.filters = {
         all: '',
@@ -152,14 +138,14 @@ export default class App extends Component {
     this.setState(({ todoData }) => {
       const newArr = [...todoData];
       /* Скрываем активные задачи */
-      for (const elem of newArr) {
+      newArr.forEach((elem) => {
         if (!elem.done) {
-          // если Задача Активна
+          // задача выполнена
           elem.visible = false; // сделай ее невидимой
         } else {
           elem.visible = true; // иначе сделай видимой
         }
-      }
+      });
 
       this.filters = {
         all: '',
@@ -173,19 +159,26 @@ export default class App extends Component {
     });
   };
 
+  // Функция создания элемента списка
+  createTask(label) {
+    return {
+      label: label,
+      done: false,
+      visible: true,
+      id: this.maxId++,
+      startTime: new Date(),
+    };
+  }
+
   render() {
-    const tacks = this.state.todoData; // массив с задачами
+    const { todoData: tacks } = this.state; // массив с задачами
     const taskCount = tacks.length - tacks.filter((el) => el.done).length; // незавершенные задачи
 
     return (
       <section className="todoapp">
         <NewTaskForm onTaskAdded={this.addTask} />
         <section className="main">
-          <TaskList
-            todos={this.state.todoData}
-            onDeleted={this.deleteTask}
-            onToggleDone={this.onToggleDone}
-          />
+          <TaskList todos={tacks} onDeleted={this.deleteTask} onToggleDone={this.onToggleDone} />
           <Footer
             taskCount={taskCount}
             onDeleteAllDone={this.deleteAllDone}

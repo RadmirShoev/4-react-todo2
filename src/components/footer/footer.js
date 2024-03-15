@@ -1,31 +1,29 @@
 import React from 'react';
 import './footer.css';
 import PropTypes from 'prop-types';
+
 import TasksFilter from '../tasks-filter/tasks-filter';
 
-function Footer({
-  taskCount,
-  onDeleteAllDone,
-  onSelectAll,
-  onSelectActive,
-  onSelectCompleted,
-  filters,
-}) {
+function Footer({ taskCount, onDeleteAllDone, onSelectAll, onSelectActive, onSelectCompleted, filters }) {
   return (
     <footer className="footer">
-      <span className="todo-count">{taskCount} tasks left</span>
+      <span className="todo-count">
+        {taskCount}
+        tasks left
+      </span>
       <TasksFilter
         onSelectAll={() => onSelectAll()}
         onSelectActive={() => onSelectActive()}
         onSelectCompleted={() => onSelectCompleted()}
         filters={filters}
       />
-      <button className="clear-completed" onClick={onDeleteAllDone}>
+      <button className="clear-completed" type="button" onClick={onDeleteAllDone}>
         Clear completed
       </button>
     </footer>
   );
 }
+
 Footer.defaultProps = {
   taskCount: 0,
   onDeleteAllDone: () => {},
@@ -38,6 +36,7 @@ Footer.defaultProps = {
     completed: '',
   },
 };
+
 Footer.propTypes = {
   taskCount: PropTypes.number,
   onDeleteAllDone: PropTypes.func,
@@ -46,4 +45,5 @@ Footer.propTypes = {
   onSelectCompleted: PropTypes.func,
   filters: PropTypes.object,
 };
+
 export default Footer;

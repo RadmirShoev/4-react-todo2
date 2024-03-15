@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import './new-task-form.css';
+import PropTypes from 'prop-types';
 
 export default class NewTaskForm extends Component {
-  state = {
-    label: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      label: '',
+    };
+  }
 
   /* Функция ввода текста в input */
   onLabelChange = (event) => {
@@ -39,3 +43,11 @@ export default class NewTaskForm extends Component {
     );
   }
 }
+
+NewTaskForm.defaultProps = {
+  onTaskAdded: () => {},
+};
+
+NewTaskForm.propTypes = {
+  onTaskAdded: PropTypes.func,
+};
