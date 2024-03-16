@@ -8,7 +8,7 @@ function Footer({ taskCount, onDeleteAllDone, onSelectAll, onSelectActive, onSel
   return (
     <footer className="footer">
       <span className="todo-count">
-        {taskCount}
+        {taskCount + ' '}
         tasks left
       </span>
       <TasksFilter

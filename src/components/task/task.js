@@ -20,9 +20,9 @@ function Task(props) {
     notVis += ' not-visible'; // для задач которые нужно скрыть
   }
 
-  let time = formatDistanceToNow(startTime);
+  let time = ' ' + formatDistanceToNow(startTime);
   setInterval(() => {
-    time = formatDistanceToNow(Date.now() - startTime.getTime() / 1000);
+    time = ' ' + formatDistanceToNow(Date.now() - startTime.getTime() / 1000);
   }, 1000);
 
   return (
