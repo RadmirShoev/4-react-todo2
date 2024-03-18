@@ -30,12 +30,12 @@ export default class NewTaskForm extends Component {
   render() {
     return (
       <header className="header">
-        <h1>todos</h1>
+        <h1>список задач</h1>
         <form onSubmit={this.onSubmit}>
           <input
             className="new-todo"
             value={this.state.label}
-            placeholder="What needs to be done?"
+            placeholder="Введите новую задачу"
             onChange={this.onLabelChange}
           />
         </form>

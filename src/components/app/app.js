@@ -19,9 +19,23 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      todoData: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
+      todoData: [this.createTask('Выпить кофе'), this.createTask('Прочитать книгу'), this.createTask('Сверстать сайт')],
+      filter: 'all',
     };
   }
+
+  filterTasks = (items, filter) => {
+    switch (filter) {
+      case 'all':
+        return items;
+      case 'completed':
+        return items.filter((item) => item.done);
+      case 'active':
+        return items.filter((item) => !item.done);
+      default:
+        return items;
+    }
+  };
 
   // удалить задачу из списка
   deleteTask = (id) => {
@@ -90,73 +104,32 @@ export default class App extends Component {
 
   // ФИЛЬТР Все задачи
   selectAll = () => {
-    this.setState(({ todoData }) => {
-      const newArr = [...todoData];
-      /* Делаем все элементы видимыми */
-      newArr.forEach((elem) => (elem.visible = true));
-
-      this.filters = {
-        all: 'selected',
-        active: '',
-        completed: '',
-      };
-
-      return {
-        todoData: newArr, // возвращаем изменненый массив задач
-      };
-    });
+    this.setState({ filter: 'all' });
+    this.filters = {
+      all: 'selected',
+      active: '',
+      completed: '',
+    };
   };
 
   // ФИЛЬТР только активные задачи
   selectActive = () => {
-    this.setState(({ todoData }) => {
-      const newArr = [...todoData];
-      /* Скрываем завершенные задачи */
-      newArr.forEach((elem) => {
-        if (elem.done) {
-          // задача выполнена
-          elem.visible = false; // сделай ее невидимой
-        } else {
-          elem.visible = true; // иначе сделай видимой
-        }
-      });
-
-      this.filters = {
-        all: '',
-        active: 'selected',
-        completed: '',
-      };
-
-      return {
-        todoData: newArr, // возвращаем изменненый массив задач
-      };
-    });
+    this.setState({ filter: 'active' });
+    this.filters = {
+      all: '',
+      active: 'selected',
+      completed: '',
+    };
   };
 
   // ФИЛЬТР только завершенные задачи
   selectCompleted = () => {
-    this.setState(({ todoData }) => {
-      const newArr = [...todoData];
-      /* Скрываем активные задачи */
-      newArr.forEach((elem) => {
-        if (!elem.done) {
-          // задача выполнена
-          elem.visible = false; // сделай ее невидимой
-        } else {
-          elem.visible = true; // иначе сделай видимой
-        }
-      });
-
-      this.filters = {
-        all: '',
-        active: '',
-        completed: 'selected',
-      };
-
-      return {
-        todoData: newArr, // возвращаем изменненый массив задач
-      };
-    });
+    this.setState({ filter: 'completed' });
+    this.filters = {
+      all: '',
+      active: '',
+      completed: 'selected',
+    };
   };
 
   // Функция создания элемента списка
@@ -164,14 +137,14 @@ export default class App extends Component {
     return {
       label: label,
       done: false,
-      visible: true,
       id: this.maxId++,
       startTime: new Date(),
     };
   }
 
   render() {
-    const { todoData: tacks } = this.state; // массив с задачами
+    const { todoData, filter } = this.state;
+    const tacks = this.filterTasks(todoData, filter); // массив с задачами
     const taskCount = tacks.length - tacks.filter((el) => el.done).length; // незавершенные задачи
 
     return (
