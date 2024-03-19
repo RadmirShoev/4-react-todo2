@@ -30,7 +30,7 @@ export default class NewTaskForm extends Component {
   render() {
     return (
       <header className="header">
-        <h1>список задач</h1>
+        <h1>задачи</h1>
         <form onSubmit={this.onSubmit}>
           <input
             className="new-todo"
