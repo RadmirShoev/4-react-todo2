@@ -24,20 +24,6 @@ export default class App extends Component {
     };
   }
 
-  componentDidMount() {
-    const savedData = JSON.parse(localStorage.getItem('todoData'));
-    savedData.forEach((elem) => {
-      let time = new Date(elem.startTime);
-      elem.startTime = time;
-    });
-
-    if (savedData) {
-      this.setState({
-        todoData: savedData,
-      });
-    }
-  }
-
   filterTasks = (items, filter) => {
     switch (filter) {
       case 'all':
@@ -160,9 +146,6 @@ export default class App extends Component {
     const { todoData, filter } = this.state;
     const tacks = this.filterTasks(todoData, filter); // массив с задачами
     const taskCount = todoData.length - todoData.filter((el) => el.done).length; // незавершенные задачи
-
-    localStorage.setItem('todoData', JSON.stringify(todoData));
-    console.log(localStorage.getItem('todoData'));
 
     return (
       <section className="todoapp">
