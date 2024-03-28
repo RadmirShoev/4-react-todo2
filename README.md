@@ -1,3 +1,3 @@
-Планировщик задач https://4-react-todo2.vercel.app/
+Планировщик задач https://github.com/RadmirShoev/4-react-todo2/tree/todoWithTimer
 -----------------
 
