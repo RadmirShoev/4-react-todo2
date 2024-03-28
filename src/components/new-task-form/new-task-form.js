@@ -7,6 +7,8 @@ export default class NewTaskForm extends Component {
     super(props);
     this.state = {
       label: '',
+      min: '',
+      sec: '',
     };
   }
 
@@ -16,14 +18,29 @@ export default class NewTaskForm extends Component {
       label: event.target.value, // записываем в state
     });
   };
+  onMinChange = (event) => {
+    this.setState({
+      min: event.target.value, // записываем в state
+    });
+  };
+  onSecChange = (event) => {
+    this.setState({
+      sec: event.target.value, // записываем в state
+    });
+  };
 
   /* Функция отправки формы */
   onSubmit = (event) => {
+    const { label, min, sec } = this.state;
     event.preventDefault();
 
     if (this.state.label) {
-      this.props.onTaskAdded(this.state.label);
-      this.setState({ label: '' });
+      this.props.onTaskAdded(label, min, sec);
+      this.setState({
+        label: '',
+        min: '',
+        sec: '',
+      });
     }
   };
 
@@ -31,13 +48,26 @@ export default class NewTaskForm extends Component {
     return (
       <header className="header">
         <h1>задачи</h1>
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={this.onSubmit} className="new-todo-form">
           <input
             className="new-todo"
             value={this.state.label}
             placeholder="Введите новую задачу"
             onChange={this.onLabelChange}
           />
+          <input
+            className="new-todo-form__timer"
+            placeholder="Min"
+            value={this.state.min}
+            onChange={this.onMinChange}
+          />
+          <input
+            className="new-todo-form__timer"
+            placeholder="Sec"
+            value={this.state.sec}
+            onChange={this.onSecChange}
+          />
+          <button type="submit"></button>
         </form>
       </header>
     );

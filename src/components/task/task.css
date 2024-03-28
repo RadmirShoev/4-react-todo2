@@ -29,7 +29,3 @@
 .toggle-all:checked + label:before {
 	color: #737373;
 }
-
-.not-visible {
-	display: none;
-}
