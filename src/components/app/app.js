@@ -19,7 +19,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      todoData: [this.createTask('Выпить кофе'), this.createTask('Прочитать книгу'), this.createTask('Сверстать сайт')],
+      todoData: [this.createTask('Выпить чай'), this.createTask('Взять ключи'), this.createTask('Купить дом')],
       filter: 'all',
     };
   }
@@ -55,9 +55,9 @@ export default class App extends Component {
   };
 
   // Добавить новую задачу
-  addTask = (text) => {
+  addTask = (text, min = 0, sec = 0) => {
     // создаем новую задачу с уникальным ID
-    const newTask = this.createTask(text);
+    const newTask = this.createTask(text, min, sec);
 
     // добавляем новую задачу в todoData
     this.setState(({ todoData }) => {
@@ -73,14 +73,87 @@ export default class App extends Component {
       /* Вычисляем Индекс элемента который нужно удалить по id */
       const idx = todoData.findIndex((el) => el.id === id);
 
-      // 1 Овновляем объект задачи по id
+      // 1 Обновляем объект задачи по id
       const oldTask = todoData[idx];
 
       const newTask = {
         ...oldTask, // копируем весь объект
         done: !oldTask.done,
+        timerRun: false,
       }; // заменяем свойство на противоположное !oldTask.done
 
+      // 2 обновляем массив со всеми задачами
+      const newArray = [...todoData];
+      newArray[idx] = newTask;
+
+      return {
+        todoData: newArray, // возвращаем изменненый массив задач
+      };
+    });
+  };
+
+  //Функция Запуск Таймера
+  timerStart = (id) => {
+    this.setState(({ todoData }) => {
+      /* Вычисляем Индекс элемента который нужно удалить по id */
+      const idx = todoData.findIndex((el) => el.id === id);
+
+      // 1 Обновляем объект задачи по id
+      const oldTask = todoData[idx];
+
+      const newTask = {
+        ...oldTask, // копируем весь объект
+        timerRun: true,
+      };
+      console.log(newTask);
+      // 2 обновляем массив со всеми задачами
+      const newArray = [...todoData];
+      newArray[idx] = newTask;
+
+      return {
+        todoData: newArray, // возвращаем изменненый массив задач
+      };
+    });
+  };
+
+  timerStop = (id) => {
+    this.setState(({ todoData }) => {
+      /* Вычисляем Индекс элемента который нужно удалить по id */
+      const idx = todoData.findIndex((el) => el.id === id);
+
+      // 1 Обновляем объект задачи по id
+      const oldTask = todoData[idx];
+
+      const newTask = {
+        ...oldTask, // копируем весь объект
+        timerRun: false,
+      };
+
+      // 2 обновляем массив со всеми задачами
+      const newArray = [...todoData];
+      newArray[idx] = newTask;
+
+      return {
+        todoData: newArray, // возвращаем изменненый массив задач
+      };
+    });
+  };
+
+  //Функция обновления времени таймера в задаче
+  timerUpdate = (id, min, sec) => {
+    this.setState(({ todoData }) => {
+      /* Вычисляем Индекс элемента который нужно удалить по id */
+      const idx = todoData.findIndex((el) => el.id === id);
+
+      // 1 Обновляем объект задачи по id
+      const oldTask = todoData[idx];
+
+      const newTask = {
+        ...oldTask, // копируем весь объект
+        min: min,
+        sec: sec,
+      };
+      console.log(newTask);
       // 2 обновляем массив со всеми задачами
       const newArray = [...todoData];
       newArray[idx] = newTask;
@@ -133,12 +206,15 @@ export default class App extends Component {
   };
 
   // Функция создания элемента списка
-  createTask(label) {
+  createTask(label, min = 0, sec = 0) {
     return {
       label: label,
       done: false,
       id: this.maxId++,
       startTime: new Date(),
+      min: min,
+      sec: sec,
+      timerRun: false,
     };
   }
 
@@ -151,7 +227,14 @@ export default class App extends Component {
       <section className="todoapp">
         <NewTaskForm onTaskAdded={this.addTask} />
         <section className="main">
-          <TaskList todos={tacks} onDeleted={this.deleteTask} onToggleDone={this.onToggleDone} />
+          <TaskList
+            todos={tacks}
+            onDeleted={this.deleteTask}
+            onToggleDone={this.onToggleDone}
+            onTimerStart={this.timerStart}
+            onTimerStop={this.timerStop}
+            onTimerUpdate={this.timerUpdate}
+          />
           <Footer
             taskCount={taskCount}
             onDeleteAllDone={this.deleteAllDone}
