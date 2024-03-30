@@ -18,7 +18,7 @@ function TaskList({ todos, onDeleted, onToggleDone, onTimerStart, onTimerStop, o
         }}
         onTimerStart={() => onTimerStart(id)}
         onTimerStop={() => onTimerStop(id)}
-        onTimerUpdate={(min, sec) => onTimerUpdate(id, min, sec)}
+        onTimerUpdate={(min, sec, disableTime) => onTimerUpdate(id, min, sec, disableTime)}
         key={id}
       />
     );

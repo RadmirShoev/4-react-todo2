@@ -58,7 +58,12 @@ export default class App extends Component {
   addTask = (text, min = 0, sec = 0) => {
     // создаем новую задачу с уникальным ID
     const newTask = this.createTask(text, min, sec);
-
+    if (newTask.min === '') {
+      newTask.min = 0;
+    }
+    if (newTask.sec === '') {
+      newTask.sec = 0;
+    }
     // добавляем новую задачу в todoData
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newTask];
@@ -105,7 +110,7 @@ export default class App extends Component {
         ...oldTask, // копируем весь объект
         timerRun: true,
       };
-      console.log(newTask);
+
       // 2 обновляем массив со всеми задачами
       const newArray = [...todoData];
       newArray[idx] = newTask;
@@ -140,7 +145,7 @@ export default class App extends Component {
   };
 
   //Функция обновления времени таймера в задаче
-  timerUpdate = (id, min, sec) => {
+  timerUpdate = (id, min, sec, disableTime = 0) => {
     this.setState(({ todoData }) => {
       /* Вычисляем Индекс элемента который нужно удалить по id */
       const idx = todoData.findIndex((el) => el.id === id);
@@ -152,8 +157,9 @@ export default class App extends Component {
         ...oldTask, // копируем весь объект
         min: min,
         sec: sec,
+        disableTime: disableTime,
       };
-      console.log(newTask);
+
       // 2 обновляем массив со всеми задачами
       const newArray = [...todoData];
       newArray[idx] = newTask;
@@ -215,6 +221,7 @@ export default class App extends Component {
       min: min,
       sec: sec,
       timerRun: false,
+      disableTime: 0,
     };
   }
 
