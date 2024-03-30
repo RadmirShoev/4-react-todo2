@@ -19,14 +19,20 @@ export default class NewTaskForm extends Component {
     });
   };
   onMinChange = (event) => {
-    this.setState({
-      min: event.target.value, // записываем в state
-    });
+    let newMin = event.target.value;
+    if (Number(newMin) || newMin === '') {
+      this.setState({
+        min: newMin, // записываем в state
+      });
+    }
   };
   onSecChange = (event) => {
-    this.setState({
-      sec: event.target.value, // записываем в state
-    });
+    let newSec = event.target.value;
+    if (Number(newSec) || newSec === '') {
+      this.setState({
+        sec: newSec, // записываем в state
+      });
+    }
   };
 
   /* Функция отправки формы */
