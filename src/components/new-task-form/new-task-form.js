@@ -18,20 +18,26 @@ export default class NewTaskForm extends Component {
       label: event.target.value, // записываем в state
     });
   };
+
   onMinChange = (event) => {
     let newMin = event.target.value;
-    if (Number(newMin) || newMin === '') {
-      this.setState({
-        min: newMin, // записываем в state
-      });
+    if (Number(newMin) || newMin === '' || newMin === 0) {
+      if (newMin <= 60) {
+        this.setState({
+          min: newMin, // записываем в state
+        });
+      }
     }
   };
+
   onSecChange = (event) => {
     let newSec = event.target.value;
-    if (Number(newSec) || newSec === '') {
-      this.setState({
-        sec: newSec, // записываем в state
-      });
+    if (Number(newSec) || newSec === '' || newSec === 0) {
+      if (newSec <= 60) {
+        this.setState({
+          sec: newSec, // записываем в state
+        });
+      }
     }
   };
 
@@ -40,7 +46,7 @@ export default class NewTaskForm extends Component {
     const { label, min, sec } = this.state;
     event.preventDefault();
 
-    if (this.state.label) {
+    if (label && (min > 0 || sec > 0)) {
       this.props.onTaskAdded(label, min, sec);
       this.setState({
         label: '',
