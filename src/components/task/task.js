@@ -34,12 +34,18 @@ export default class Task extends Component {
       disMinute = Math.floor(disSeconds / 60);
       disSeconds = disSeconds - 60 * disMinute;
     }
-    let newSec = sec + disSeconds;
-    let newMin = min + disMinute;
 
-    if (newSec > 59) {
-      newMin++;
-      newSec = newSec - 60;
+    let newSec = sec - disSeconds;
+    let newMin = min - disMinute;
+
+    if (disSeconds > sec) {
+      newSec = 60 + sec - disSeconds;
+      newMin--;
+    }
+
+    if (disMinute > min) {
+      newMin = 0;
+      newSec = 0;
     }
 
     this.setState(() => {
@@ -70,11 +76,15 @@ export default class Task extends Component {
 
   timerTick = () => {
     let { sec, min } = this.state;
-    sec++;
+    if (sec === 0 && min === 0) {
+      this.props.onTimerStop();
+      return;
+    }
+    sec--;
 
-    if (sec > 59) {
-      min++;
-      sec = 0;
+    if (sec < 0) {
+      min--;
+      sec = 59;
     }
     this.setState(() => {
       return {

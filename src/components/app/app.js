@@ -212,7 +212,7 @@ export default class App extends Component {
   };
 
   // Функция создания элемента списка
-  createTask(label, min = 0, sec = 0) {
+  createTask(label, min = 5, sec = 0) {
     return {
       label: label,
       done: false,
