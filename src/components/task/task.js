@@ -13,20 +13,19 @@ function Task(props) {
   });
 
   //Вместо componentDidMount
-  /* useEffect(() => {
-    if (props.timerRun && !timerId) {
-      savedSecondsTransform();
-      timerId = setInterval(timerTick, 1000);
+  useEffect(() => {
+    if (props.timerRun) {
+      console.log('Запустили savedSecondsTransform', disableTime);
+      savedSecondsTransform(disableTime);
     }
-  }, []);*/
+  }, []);
 
-  const savedSecondsTransform = () => {
-    const { disableTime } = props;
+  const savedSecondsTransform = (disableTime) => {
     if (disableTime) {
       setTimeState(({ min, sec }) => {
         let disSeconds = Math.round((Date.now() - disableTime) / 1000);
         let disMinute = 0;
-        console.log('Время отсутствия', disSeconds);
+
         if (disSeconds > 60) {
           disMinute = Math.floor(disSeconds / 60);
           disSeconds = disSeconds - 60 * disMinute;
@@ -55,8 +54,6 @@ function Task(props) {
 
   //Вместо componentDidUpdate
   useEffect(() => {
-    savedSecondsTransform();
-
     if (props.timerRun && !timerId) {
       console.log('Включили таймер', props);
       timerId = setInterval(timerTick, 1000);
@@ -72,13 +69,10 @@ function Task(props) {
   // Вместо componentWillUnmount
   useEffect(() => {
     return () => {
-      disableTime = 0;
-      console.log('Выключили');
+      disableTime = Date.now(); // запоминаем текущий таймстамп
+      console.log('запомнили время выключения');
+
       setTimeState(({ min, sec }) => {
-        if (props.timerRun) {
-          disableTime = Date.now(); // запоминаем текущий таймстамп
-          console.log('запомнили время выключения');
-        }
         props.onTimerUpdate(min, sec, disableTime); //Отправляем в APP
 
         return {
@@ -104,8 +98,7 @@ function Task(props) {
       return;
     }
 
-    setTimeState((prevTimeState) => {
-      let { sec, min } = prevTimeState;
+    setTimeState(({ sec, min }) => {
       if (sec === 0 && min === 0) {
         props.onTimerStop();
         return;
@@ -117,7 +110,7 @@ function Task(props) {
         sec = 59;
       }
 
-      props.onTimerUpdate(min, sec, disableTime);
+      props.onTimerUpdate(min, sec);
 
       return {
         sec: sec,
