@@ -1,30 +1,24 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './app.css';
 
 import Footer from '../footer/footer';
 import NewTaskForm from '../new-task-form/new-task-form';
 import TaskList from '../task-list/task-list';
 
-export default class App extends Component {
-  // Компонент всего приложения
-  maxId = 100;
+let maxId = 100;
+// Объект с состояниями Фильтра All, Active, Completed
+let filters = {
+  all: 'selected',
+  active: '',
+  completed: '',
+};
 
-  // Объект с состояниями Фильтра All, Active, Completed
-  filters = {
-    all: 'selected',
-    active: '',
-    completed: '',
-  };
+function App() {
+  //Состояния ФИЛЬТР И МАССИВ С ЗАДАЧАМИ
+  let [todoData, setTodoData] = useState([createTask('Выпить чай')]);
+  let [filter, setFilter] = useState('all');
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      todoData: [this.createTask('Выпить чай'), this.createTask('Взять ключи'), this.createTask('Купить дом')],
-      filter: 'all',
-    };
-  }
-
-  filterTasks = (items, filter) => {
+  const filterTasks = (items, filter) => {
     switch (filter) {
       case 'all':
         return items;
@@ -38,8 +32,8 @@ export default class App extends Component {
   };
 
   // удалить задачу из списка
-  deleteTask = (id) => {
-    this.setState(({ todoData }) => {
+  const deleteTask = (id) => {
+    setTodoData((todoData) => {
       /* Вычисляем Индекс элемента который нужно удалить по id */
       const idx = todoData.findIndex((el) => el.id === id);
 
@@ -48,16 +42,14 @@ export default class App extends Component {
 
       const newArr = [...before, ...after]; // новый массив без удаленного элемента
 
-      return {
-        todoData: newArr, // устанавливаем новый массив, без удаленного элемента
-      };
+      return newArr; // устанавливаем новый массив, без удаленного элемента
     });
   };
 
   // Добавить новую задачу
-  addTask = (text, min = 0, sec = 0) => {
+  const addTask = (text, min = 0, sec = 0) => {
     // создаем новую задачу с уникальным ID
-    const newTask = this.createTask(text, min, sec);
+    const newTask = createTask(text, min, sec);
     if (newTask.min === '') {
       newTask.min = 0;
     }
@@ -65,16 +57,16 @@ export default class App extends Component {
       newTask.sec = 0;
     }
     // добавляем новую задачу в todoData
-    this.setState(({ todoData }) => {
+    setTodoData((todoData) => {
       const newArr = [...todoData, newTask];
 
-      return { todoData: newArr };
+      return newArr;
     });
   };
 
   // Переключение Выполнена/Невыполнена ЗАДАЧА
-  onToggleDone = (id) => {
-    this.setState(({ todoData }) => {
+  const onToggleDone = (id) => {
+    setTodoData((todoData) => {
       /* Вычисляем Индекс элемента который нужно удалить по id */
       const idx = todoData.findIndex((el) => el.id === id);
 
@@ -91,15 +83,13 @@ export default class App extends Component {
       const newArray = [...todoData];
       newArray[idx] = newTask;
 
-      return {
-        todoData: newArray, // возвращаем изменненый массив задач
-      };
+      return newArray; // возвращаем изменненый массив задач
     });
   };
 
   //Функция Запуск Таймера
-  timerStart = (id) => {
-    this.setState(({ todoData }) => {
+  const timerStart = (id) => {
+    setTodoData((todoData) => {
       /* Вычисляем Индекс элемента который нужно удалить по id */
       const idx = todoData.findIndex((el) => el.id === id);
 
@@ -115,14 +105,12 @@ export default class App extends Component {
       const newArray = [...todoData];
       newArray[idx] = newTask;
 
-      return {
-        todoData: newArray, // возвращаем изменненый массив задач
-      };
+      return newArray; // возвращаем изменненый массив задач
     });
   };
 
-  timerStop = (id) => {
-    this.setState(({ todoData }) => {
+  const timerStop = (id) => {
+    setTodoData((todoData) => {
       /* Вычисляем Индекс элемента который нужно удалить по id */
       const idx = todoData.findIndex((el) => el.id === id);
 
@@ -138,15 +126,13 @@ export default class App extends Component {
       const newArray = [...todoData];
       newArray[idx] = newTask;
 
-      return {
-        todoData: newArray, // возвращаем изменненый массив задач
-      };
+      return newArray;
     });
   };
 
   //Функция обновления времени таймера в задаче
-  timerUpdate = (id, min, sec, disableTime = 0) => {
-    this.setState(({ todoData }) => {
+  const timerUpdate = (id, min, sec, disableTime = 0) => {
+    setTodoData((todoData) => {
       /* Вычисляем Индекс элемента который нужно удалить по id */
       const idx = todoData.findIndex((el) => el.id === id);
 
@@ -164,27 +150,23 @@ export default class App extends Component {
       const newArray = [...todoData];
       newArray[idx] = newTask;
 
-      return {
-        todoData: newArray, // возвращаем изменненый массив задач
-      };
+      return newArray;
     });
   };
 
   // Удаление всех завершенных задач
-  deleteAllDone = () => {
-    this.setState(({ todoData }) => {
+  const deleteAllDone = () => {
+    setTodoData((todoData) => {
       const newArr = todoData.filter((el) => el.done === false);
 
-      return {
-        todoData: newArr,
-      };
+      return newArr;
     });
   };
 
   // ФИЛЬТР Все задачи
-  selectAll = () => {
-    this.setState({ filter: 'all' });
-    this.filters = {
+  const selectAll = () => {
+    setFilter('all');
+    filters = {
       all: 'selected',
       active: '',
       completed: '',
@@ -192,9 +174,9 @@ export default class App extends Component {
   };
 
   // ФИЛЬТР только активные задачи
-  selectActive = () => {
-    this.setState({ filter: 'active' });
-    this.filters = {
+  const selectActive = () => {
+    setFilter('active');
+    filters = {
       all: '',
       active: 'selected',
       completed: '',
@@ -202,9 +184,9 @@ export default class App extends Component {
   };
 
   // ФИЛЬТР только завершенные задачи
-  selectCompleted = () => {
-    this.setState({ filter: 'completed' });
-    this.filters = {
+  const selectCompleted = () => {
+    setFilter('completed');
+    filters = {
       all: '',
       active: '',
       completed: 'selected',
@@ -212,11 +194,11 @@ export default class App extends Component {
   };
 
   // Функция создания элемента списка
-  createTask(label, min = 5, sec = 0) {
+  function createTask(label, min = 5, sec = 0) {
     return {
       label: label,
       done: false,
-      id: this.maxId++,
+      id: maxId++,
       startTime: new Date(),
       min: min,
       sec: sec,
@@ -225,33 +207,32 @@ export default class App extends Component {
     };
   }
 
-  render() {
-    const { todoData, filter } = this.state;
-    const tacks = this.filterTasks(todoData, filter); // массив с задачами
-    const taskCount = todoData.length - todoData.filter((el) => el.done).length; // незавершенные задачи
+  const tacks = filterTasks(todoData, filter); // массив с задачами
+  const taskCount = todoData.length - todoData.filter((el) => el.done).length; // незавершенные задачи
 
-    return (
-      <section className="todoapp">
-        <NewTaskForm onTaskAdded={this.addTask} />
-        <section className="main">
-          <TaskList
-            todos={tacks}
-            onDeleted={this.deleteTask}
-            onToggleDone={this.onToggleDone}
-            onTimerStart={this.timerStart}
-            onTimerStop={this.timerStop}
-            onTimerUpdate={this.timerUpdate}
-          />
-          <Footer
-            taskCount={taskCount}
-            onDeleteAllDone={this.deleteAllDone}
-            onSelectAll={this.selectAll}
-            onSelectActive={this.selectActive}
-            onSelectCompleted={this.selectCompleted}
-            filters={this.filters}
-          />
-        </section>
+  return (
+    <section className="todoapp">
+      <NewTaskForm onTaskAdded={addTask} />
+      <section className="main">
+        <TaskList
+          todos={tacks}
+          onDeleted={deleteTask}
+          onToggleDone={onToggleDone}
+          onTimerStart={timerStart}
+          onTimerStop={timerStop}
+          onTimerUpdate={timerUpdate}
+        />
+        <Footer
+          taskCount={taskCount}
+          onDeleteAllDone={deleteAllDone}
+          onSelectAll={selectAll}
+          onSelectActive={selectActive}
+          onSelectCompleted={selectCompleted}
+          filters={filters}
+        />
       </section>
-    );
-  }
+    </section>
+  );
 }
+
+export default App;

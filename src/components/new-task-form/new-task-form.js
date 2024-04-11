@@ -1,89 +1,60 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './new-task-form.css';
 import PropTypes from 'prop-types';
 
-export default class NewTaskForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      label: '',
-      min: '',
-      sec: '',
-    };
-  }
+function NewTaskForm(props) {
+  let [label, setLabel] = useState('');
+  let [min, setMin] = useState('');
+  let [sec, setSec] = useState('');
 
   /* Функция ввода текста в input */
-  onLabelChange = (event) => {
-    this.setState({
-      label: event.target.value, // записываем в state
+  const onLabelChange = (event) => {
+    setLabel(() => {
+      return event.target.value;
     });
   };
 
-  onMinChange = (event) => {
+  const onMinChange = (event) => {
     let newMin = event.target.value;
     if (Number(newMin) || newMin === '' || newMin === 0) {
       if (newMin <= 60) {
-        this.setState({
-          min: newMin, // записываем в state
-        });
+        setMin(newMin);
       }
     }
   };
 
-  onSecChange = (event) => {
+  const onSecChange = (event) => {
     let newSec = event.target.value;
     if (Number(newSec) || newSec === '' || newSec === 0) {
       if (newSec <= 60) {
-        this.setState({
-          sec: newSec, // записываем в state
-        });
+        setSec(newSec);
       }
     }
   };
 
   /* Функция отправки формы */
-  onSubmit = (event) => {
-    const { label, min, sec } = this.state;
+  const onSubmit = (event) => {
     event.preventDefault();
 
     if (label && (min > 0 || sec > 0)) {
-      this.props.onTaskAdded(label, min, sec);
-      this.setState({
-        label: '',
-        min: '',
-        sec: '',
-      });
+      props.onTaskAdded(label, min, sec);
+      setLabel('');
+      setMin('');
+      setSec('');
     }
   };
 
-  render() {
-    return (
-      <header className="header">
-        <h1>задачи</h1>
-        <form onSubmit={this.onSubmit} className="new-todo-form">
-          <input
-            className="new-todo"
-            value={this.state.label}
-            placeholder="Введите новую задачу"
-            onChange={this.onLabelChange}
-          />
-          <input
-            className="new-todo-form__timer"
-            placeholder="Min"
-            value={this.state.min}
-            onChange={this.onMinChange}
-          />
-          <input
-            className="new-todo-form__timer"
-            placeholder="Sec"
-            value={this.state.sec}
-            onChange={this.onSecChange}
-          />
-          <button type="submit"></button>
-        </form>
-      </header>
-    );
-  }
+  return (
+    <header className="header">
+      <h1>задачи</h1>
+      <form onSubmit={onSubmit} className="new-todo-form">
+        <input className="new-todo" value={label} placeholder="Введите новую задачу" onChange={onLabelChange} />
+        <input className="new-todo-form__timer" placeholder="Min" value={min} onChange={onMinChange} />
+        <input className="new-todo-form__timer" placeholder="Sec" value={sec} onChange={onSecChange} />
+        <button type="submit"></button>
+      </form>
+    </header>
+  );
 }
 
 NewTaskForm.defaultProps = {
@@ -93,3 +64,5 @@ NewTaskForm.defaultProps = {
 NewTaskForm.propTypes = {
   onTaskAdded: PropTypes.func,
 };
+
+export default NewTaskForm;
