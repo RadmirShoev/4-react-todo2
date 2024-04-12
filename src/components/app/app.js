@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { nanoid } from 'nanoid';
 import './app.css';
 
 import Footer from '../footer/footer';
 import NewTaskForm from '../new-task-form/new-task-form';
 import TaskList from '../task-list/task-list';
 
-let maxId = 100;
 // Объект с состояниями Фильтра All, Active, Completed
 let filters = {
   all: 'selected',
@@ -87,49 +87,6 @@ function App() {
     });
   };
 
-  //Функция Запуск Таймера
-  const timerStart = (id) => {
-    setTodoData((todoData) => {
-      /* Вычисляем Индекс элемента который нужно удалить по id */
-      const idx = todoData.findIndex((el) => el.id === id);
-
-      // 1 Обновляем объект задачи по id
-      const oldTask = todoData[idx];
-
-      const newTask = {
-        ...oldTask, // копируем весь объект
-        timerRun: true,
-      };
-
-      // 2 обновляем массив со всеми задачами
-      const newArray = [...todoData];
-      newArray[idx] = newTask;
-
-      return newArray; // возвращаем изменненый массив задач
-    });
-  };
-
-  const timerStop = (id) => {
-    setTodoData((todoData) => {
-      /* Вычисляем Индекс элемента который нужно удалить по id */
-      const idx = todoData.findIndex((el) => el.id === id);
-
-      // 1 Обновляем объект задачи по id
-      const oldTask = todoData[idx];
-
-      const newTask = {
-        ...oldTask, // копируем весь объект
-        timerRun: false,
-      };
-
-      // 2 обновляем массив со всеми задачами
-      const newArray = [...todoData];
-      newArray[idx] = newTask;
-
-      return newArray;
-    });
-  };
-
   //Функция обновления времени таймера в задаче
   const timerUpdate = (id, min, sec, disableTime = 0) => {
     setTodoData((todoData) => {
@@ -153,7 +110,27 @@ function App() {
       return newArray;
     });
   };
+  //сохранение времени отсутствия
+  const onDisableTime = (id, disableTime = 0) => {
+    setTodoData((todoData) => {
+      /* Вычисляем Индекс элемента который нужно удалить по id */
+      const idx = todoData.findIndex((el) => el.id === id);
 
+      // 1 Обновляем объект задачи по id
+      const oldTask = todoData[idx];
+
+      const newTask = {
+        ...oldTask, // копируем весь объект
+        disableTime: disableTime,
+      };
+
+      // 2 обновляем массив со всеми задачами
+      const newArray = [...todoData];
+      newArray[idx] = newTask;
+
+      return newArray;
+    });
+  };
   // Удаление всех завершенных задач
   const deleteAllDone = () => {
     setTodoData((todoData) => {
@@ -198,7 +175,7 @@ function App() {
     return {
       label: label,
       done: false,
-      id: maxId++,
+      id: nanoid(),
       startTime: new Date(),
       min: min,
       sec: sec,
@@ -218,9 +195,8 @@ function App() {
           todos={tacks}
           onDeleted={deleteTask}
           onToggleDone={onToggleDone}
-          onTimerStart={timerStart}
-          onTimerStop={timerStop}
           onTimerUpdate={timerUpdate}
+          onDisableTime={onDisableTime}
         />
         <Footer
           taskCount={taskCount}

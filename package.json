@@ -7,6 +7,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "date-fns": "^3.4.0",
+    "nanoid": "^5.0.7",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -60,11 +61,11 @@
       "pre-commit": "lint-staged"
     }
   },
-  "lint-staged":{
-    "*.js":[
-    "npm run lint:fix",
-    "npm run format",
-    "git add"
-  ]
- }
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:fix",
+      "npm run format",
+      "git add"
+    ]
+  }
 }

@@ -3,20 +3,25 @@ import './task.css';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
 
-let disableTime = 0;
-let timerId = 0;
+//let disableTime = 0;
+//let timerId = 0;
 
 function Task(props) {
+  let { label, startTime, onDeleted, onToggleDone, done, sec, min, onTimerUpdate, onDisableTime, disableTime } = props;
+
   const [timeState, setTimeState] = useState({
-    sec: props.sec,
-    min: props.min,
+    sec: sec,
+    min: min,
   });
+
+  const [timerRun, setTimerRun] = useState(false);
+  const [timerId, setTimerId] = useState(0);
 
   //Вместо componentDidMount
   useEffect(() => {
-    if (props.timerRun) {
-      console.log('Запустили savedSecondsTransform', disableTime);
+    if (disableTime) {
       savedSecondsTransform(disableTime);
+      onStart();
     }
   }, []);
 
@@ -54,53 +59,37 @@ function Task(props) {
 
   //Вместо componentDidUpdate
   useEffect(() => {
-    if (props.timerRun && !timerId) {
-      console.log('Включили таймер', props);
-      timerId = setInterval(timerTick, 1000);
+    if (timerRun && !timerId) {
+      setTimerId(() => setInterval(timerTick, 1000));
     }
 
-    if (!props.timerRun && timerId) {
-      console.log('Стоп');
+    if (!timerRun && timerId) {
       clearInterval(timerId);
-      timerId = 0;
+      setTimerId(0);
     }
-  });
+  }, [timerRun]);
+
+  //Отправили время из стэйта таймера в APP
+  useEffect(() => {
+    onTimerUpdate(timeState.min, timeState.sec);
+  }, [timeState]);
 
   // Вместо componentWillUnmount
   useEffect(() => {
     return () => {
-      disableTime = Date.now(); // запоминаем текущий таймстамп
-      console.log('запомнили время выключения');
-
-      setTimeState(({ min, sec }) => {
-        props.onTimerUpdate(min, sec, disableTime); //Отправляем в APP
-
-        return {
-          sec: sec,
-          min: min,
-        };
-      });
-
-      clearInterval(timerId);
-      timerId = 0;
+      if (timerRun) {
+        //disableTime = Date.now();
+        onDisableTime(Date.now());
+      } else {
+        onDisableTime(0);
+      }
     };
-  }, []);
+  }, [timerRun]);
 
   const timerTick = () => {
-    let { sec, min } = props;
-
-    if (sec === 0 && min === 0) {
-      setTimeState({
-        sec: 0,
-        min: 0,
-      });
-      props.onTimerStop();
-      return;
-    }
-
     setTimeState(({ sec, min }) => {
       if (sec === 0 && min === 0) {
-        props.onTimerStop();
+        onStop();
         return;
       }
       sec--;
@@ -110,8 +99,6 @@ function Task(props) {
         sec = 59;
       }
 
-      props.onTimerUpdate(min, sec);
-
       return {
         sec: sec,
         min: min,
@@ -119,9 +106,11 @@ function Task(props) {
     });
   };
 
+  const onStart = () => setTimerRun(() => true);
+
+  const onStop = () => setTimerRun(() => false);
+
   //дальше содержимое render
-  // Дестректурируем из Props переменные
-  let { label, startTime, onDeleted, onToggleDone, done, onTimerStart, onTimerStop } = props;
   let liClass = '';
   let chek = '';
 
@@ -145,8 +134,8 @@ function Task(props) {
         <label>
           <span className="title"> {label} </span>
           <span className="description">
-            <button className="icon icon-play" onClick={onTimerStart}></button>
-            <button className="icon icon-pause" onClick={onTimerStop}></button>
+            <button className="icon icon-play" onClick={onStart}></button>
+            <button className="icon icon-pause" onClick={onStop}></button>
             {` ${minZero}${timeState.min}:${secZero}${timeState.sec}`}
           </span>
           <span className="description">

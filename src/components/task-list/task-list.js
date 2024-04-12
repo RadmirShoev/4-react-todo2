@@ -5,7 +5,7 @@ import Task from '../task/task';
 
 import './task-list.css';
 
-function TaskList({ todos, onDeleted, onToggleDone, onTimerStart, onTimerStop, onTimerUpdate }) {
+function TaskList({ todos, onDeleted, onToggleDone, onTimerUpdate, onDisableTime }) {
   const elements = todos.map((elem) => {
     const { id, ...itemProps } = elem; // дестриктурируем id, ...itemProps
 
@@ -16,9 +16,8 @@ function TaskList({ todos, onDeleted, onToggleDone, onTimerStart, onTimerStop, o
         onToggleDone={() => {
           onToggleDone(id);
         }}
-        onTimerStart={() => onTimerStart(id)}
-        onTimerStop={() => onTimerStop(id)}
         onTimerUpdate={(min, sec, disableTime) => onTimerUpdate(id, min, sec, disableTime)}
+        onDisableTime={(disableTime) => onDisableTime(id, disableTime)}
         key={id}
       />
     );
