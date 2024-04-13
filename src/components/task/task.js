@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './task.css';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 //let disableTime = 0;
 //let timerId = 0;
@@ -111,13 +112,15 @@ function Task(props) {
   const onStop = () => setTimerRun(() => false);
 
   //дальше содержимое render
-  let liClass = '';
-  let chek = '';
+  let liClass = classNames({
+    '': true,
+    completed: done,
+  });
 
-  if (done) {
-    liClass += 'completed';
-    chek += 'checked';
-  }
+  let chek = classNames({
+    '': true,
+    checked: done,
+  });
 
   let time = ' ' + formatDistanceToNow(startTime);
   setInterval(() => {
